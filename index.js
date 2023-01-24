@@ -3,6 +3,12 @@ const bolt = require('@slack/bolt')
 const dotenv = require('dotenv');
 dotenv.config();
 
+const {Configuration, OpenAIApi} = require("openai");
+const configuration = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+const openai = new OpenAIApi(configuration);
+
 const app = new bolt.App({
   token: process.env.SLACK_BOT_TOKEN,
   appToken: process.env.SLACK_APP_TOKEN,
@@ -10,8 +16,17 @@ const app = new bolt.App({
   logLevel: 'debug'
 });
 
-app.message(/hello/i, ({message, say}) => {
-  say(`こんにちは！ <@${message.user}>さん`);
+
+app.message(({message, say}) => {
+  (async (prompt) => {
+    const response = await openai.createCompletion({
+      model:"text-davinci-003",
+      prompt: `${prompt}`,
+      temperature: 0,
+      max_tokens: 1000,
+    });
+    say(response.data.choices[0].text);
+  })(message.text);
 });
 
 app.start();

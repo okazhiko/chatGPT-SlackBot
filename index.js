@@ -23,7 +23,7 @@ app.message(({message, say}) => {
       model:"text-davinci-003",
       prompt: `${prompt}`,
       temperature: 0,
-      max_tokens: 1000,
+      max_tokens: 3000,
     });
     say(response.data.choices[0].text);
   })(message.text);

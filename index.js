@@ -16,17 +16,15 @@ const app = new bolt.App({
   logLevel: 'debug'
 });
 
+app.message(async ({ message, say }) => {
+  const response = await openai.createCompletion({
+    model: 'text-davinci-003',
+    prompt: message.text,
+    temperature: 0,
+    max_tokens: 3000,
+  })
 
-app.message(({message, say}) => {
-  (async (prompt) => {
-    const response = await openai.createCompletion({
-      model:"text-davinci-003",
-      prompt: `${prompt}`,
-      temperature: 0,
-      max_tokens: 3000,
-    });
-    say(response.data.choices[0].text);
-  })(message.text);
-});
+  await say(response.data.choices[0].text)
+})
 
 app.start();

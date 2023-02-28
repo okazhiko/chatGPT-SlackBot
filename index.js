@@ -17,14 +17,17 @@ const app = new bolt.App({
 })
 
 app.message(async ({ message, say }) => {
-  const response = await openai.createCompletion({
-    model: 'text-davinci-003',
-    prompt: message.text,
-    temperature: 0,
-    max_tokens: 3000,
-  })
-
-  await say(response.data.choices[0].text)
+  try {
+    const response = await openai.createCompletion({
+      model: 'text-davinci-003',
+      prompt: message.text,
+      temperature: 0,
+      max_tokens: 3000,
+    })
+    await say(response.data.choices[0].text)
+  } catch (error) {
+    await say('エラーです。\ncode:' + error.response.status + '\nmessage:' + error.message)
+  }
 })
 
 app.start()

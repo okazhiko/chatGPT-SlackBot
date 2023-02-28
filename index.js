@@ -1,20 +1,20 @@
-'use strict';
+'use strict'
 const bolt = require('@slack/bolt')
-const dotenv = require('dotenv');
-dotenv.config();
+const dotenv = require('dotenv')
+dotenv.config()
 
-const {Configuration, OpenAIApi} = require("openai");
+const { Configuration, OpenAIApi } = require('openai')
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
-});
-const openai = new OpenAIApi(configuration);
+})
+const openai = new OpenAIApi(configuration)
 
 const app = new bolt.App({
   token: process.env.SLACK_BOT_TOKEN,
   appToken: process.env.SLACK_APP_TOKEN,
   socketMode: true,
-  logLevel: 'debug'
-});
+  logLevel: 'debug',
+})
 
 app.message(async ({ message, say }) => {
   const response = await openai.createCompletion({
@@ -27,4 +27,4 @@ app.message(async ({ message, say }) => {
   await say(response.data.choices[0].text)
 })
 
-app.start();
+app.start()
